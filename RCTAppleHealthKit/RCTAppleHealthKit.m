@@ -383,7 +383,7 @@ RCT_EXPORT_METHOD(saveBloodAlcoholContent: (NSDictionary *)input callback:(RCTRe
     }
 }
 
-RCT_EXPORT_METHOD(authorizationStatusForType:(NSString *)type
+RCT_EXPORT_METHOD(getAuthorizationStatus:(NSString *)type
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject
 {

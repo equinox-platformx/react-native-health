@@ -21,6 +21,8 @@ declare module 'react-native-health' {
 
     isAvailable(callback: (error: Object, results: boolean) => void): void
 
+    getAuthorizationStatus(permission: HealthPermission): Promise<string>
+
     getBiologicalSex(
       options: HealthUnitOptions,
       callback: (err: string, results: HealthValue) => void,
@@ -247,8 +249,8 @@ declare module 'react-native-health' {
     ): void
 
     getAuthStatus(
-      options: HealthUnitOptions,
-      callback: (err: string, results: HealthValue) => void,
+      options: HealthKitPermissions,
+      callback: (err: string, results: any) => void,
     ): void
 
     getLatestBloodAlcoholContent(
