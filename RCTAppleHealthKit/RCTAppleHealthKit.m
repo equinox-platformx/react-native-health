@@ -321,6 +321,14 @@ RCT_EXPORT_METHOD(saveBloodAlcoholContent: (NSDictionary *)input callback:(RCTRe
 }
 
 
+- (HKHealthStore *)_initializeHealthStore {
+  if(![self healthStore]) {
+    self.healthStore = [[HKHealthStore alloc] init];
+  }
+  return [self healthStore];
+}
+
+
 - (void)isHealthKitAvailable:(RCTResponseSenderBlock)callback
 {
     BOOL isAvailable = NO;
@@ -335,7 +343,7 @@ RCT_EXPORT_METHOD(saveBloodAlcoholContent: (NSDictionary *)input callback:(RCTRe
 
 - (void)initializeHealthKit:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
 {
-    self.healthStore = [[HKHealthStore alloc] init];
+    [self _initializeHealthStore];
 
     if ([HKHealthStore isHealthDataAvailable]) {
         NSSet *writeDataTypes;
@@ -396,6 +404,8 @@ RCT_EXPORT_METHOD(saveBloodAlcoholContent: (NSDictionary *)input callback:(RCTRe
 
 - (void)getAuthorizationStatus:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
 {
+  
+    [self _initializeHealthStore];
     if ([HKHealthStore isHealthDataAvailable]) {
 
         NSArray* readPermsArray;
@@ -443,7 +453,7 @@ RCT_EXPORT_METHOD(saveBloodAlcoholContent: (NSDictionary *)input callback:(RCTRe
 {
     NSLog(@"[HealthKit] Background observers will be added to the app");
 
-    self.healthStore = [[HKHealthStore alloc] init];
+    [self _initializeHealthStore];
 
     if ([HKHealthStore isHealthDataAvailable]) {
         NSArray *observers = @[
