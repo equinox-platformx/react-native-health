@@ -12,6 +12,47 @@
 
 @implementation RCTAppleHealthKit (Methods_Workout)
 
+- (void)workout_getAnchoredQuery:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
+{
+    HKUnit *unit = [RCTAppleHealthKit hkUnitFromOptions:input key:@"unit" withDefault:[HKUnit countUnit]];
+    NSUInteger limit = [RCTAppleHealthKit uintFromOptions:input key:@"limit" withDefault:HKObjectQueryNoLimit];
+    
+    HKQueryAnchor *anchor = [RCTAppleHealthKit hkAnchorFromOptions:input];
+    NSString *type = [RCTAppleHealthKit stringFromOptions:input key:@"type" withDefault:@"Walking"];
+    NSDate *startDate = [RCTAppleHealthKit dateFromOptions:input key:@"startDate" withDefault:nil];
+    NSDate *endDate = [RCTAppleHealthKit dateFromOptions:input key:@"endDate" withDefault:[NSDate date]];
+    
+    NSPredicate *predicate = [RCTAppleHealthKit predicateForAnchoredQueries:anchor startDate:startDate endDate:endDate];
+    HKSampleType *samplesType = [RCTAppleHealthKit quantityTypeFromName:type];
+    HKAuthorizationStatus authorizationForSampleType = [self.healthStore authorizationStatusForType:samplesType];
+    
+    void (^completion)(NSDictionary *results, NSError *error);
+
+    completion = ^(NSDictionary *results, NSError *error) {
+        if (results && authorizationForSampleType == HKAuthorizationStatusSharingAuthorized){
+            callback(@[[NSNull null], results]);
+
+            return;
+        } else {
+            NSLog(@"error getting samples: %@", error);
+            callback(@[RCTMakeError(@"error getting samples", error, nil)]);
+
+            return;
+        }
+    };
+
+    if ([type isEqual:@"Running"] || [type isEqual:@"Cycling"]) {
+        unit = [HKUnit mileUnit];
+    }
+
+    [self fetchAnchoredWorkouts:samplesType
+                           unit:unit
+                      predicate:predicate
+                         anchor:anchor
+                          limit:limit
+                     completion:completion];
+}
+
 - (void)workout_save: (NSDictionary *)input callback: (RCTResponseSenderBlock)callback {
     HKWorkoutActivityType type = [RCTAppleHealthKit hkWorkoutActivityTypeFromOptions:input key:@"type" withDefault:HKWorkoutActivityTypeAmericanFootball];
     NSDate *startDate = [RCTAppleHealthKit dateFromOptions:input key:@"startDate" withDefault:nil];

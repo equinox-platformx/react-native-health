@@ -82,5 +82,5 @@
   * [saveBmi](saveBmi.md)
 
 #### Workout Methods
-  * [getWorkout](getWorkout.md)
+  * [getAnchoredWorkouts](getAnchoredWorkouts.md)
   * [saveWorkout](saveWorkout.md)
