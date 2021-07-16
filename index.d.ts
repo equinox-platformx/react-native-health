@@ -13,6 +13,10 @@ declare module 'react-native-health' {
     Units: Record<HealthUnit, HealthUnit>
   }
 
+  export interface FetchHKError {
+    message?: string;
+  }
+
   export interface AppleHealthKit {
     initHealthKit(
       permissions: HealthKitPermissions,
@@ -93,7 +97,7 @@ declare module 'react-native-health' {
 
     getAnchoredWorkouts(
       options: HealthInputOptions,
-      callback: (err: string, results: AnchoredQueryResults) => void,
+      callback: (err: FetchHKError, results: AnchoredQueryResults) => void,
     ): void
 
     getDailyStepCountSamples(
